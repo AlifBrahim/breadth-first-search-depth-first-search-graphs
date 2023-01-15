@@ -161,32 +161,30 @@ public class Graph {
 		}
 	}
 
-	public void depthFirstSearch(int startingNode){
-		Stack<Integer> nodeQueue = new Stack<Integer>();		//queue where new un-visited nodes are stored
-		nodeQueue.add(startingNode);	//Initialize the queue with the starting node
-		//Array saying if a node has been visited. (INDEXED FROM 1, IGNORING 0). All future accesses must use an offset of +1 for "normal" arrays
-		boolean[] visitedNodes = new boolean[ getNodeCount() +1];		
-		ArrayList<Integer> nodesInVisitedOrder = new ArrayList<Integer>();	//list of nodes in the order that they are visited. Printed at the end of the algorithm
-		
-		while( !nodeQueue.isEmpty()){		//repeat the algorithm until queue is empty, like the pseudocaode says
-			int nodeRemovedFromQueue = nodeQueue.pop();		//pick a node from the head of the queue
-			
-			if( !visitedNodes[nodeRemovedFromQueue+1]){		//If NOT visited. (offset by +1 to make human readable array indexes)
-				visitedNodes[nodeRemovedFromQueue+1]=true;	//set to visited
-				nodesInVisitedOrder.add(nodeRemovedFromQueue);	//append to list of nodes in order they are visited
-				
-				LinkedList<Integer> rowOfNodes = getAdjacencyList().get(nodeRemovedFromQueue);	//get a list of all nodes adjacent to the current Node
-				ListIterator<Integer> iterator = rowOfNodes.listIterator();		//get an iterator for the row (using iterator since LinkedList)
-				while(iterator.hasNext()){			//Iterate over all nodes adjacent to the current node. The pseudocode has this as a FOR LOOP, but I use an Iterator & while loop since each row is a LinkedList
-					int nodeInColumn = iterator.next();
-					if( !visitedNodes[nodeInColumn+1]){		//if it's NOT visited, add to queue
-						nodeQueue.add(nodeInColumn);
-					}
-				}
-			}
-		}
-		System.out.println("\nDepth first search visitation order\n"+nodesInVisitedOrder);
-	}
+	public void depthFirstSearch(int startingNode) {
+        // create a boolean array to mark visited nodes
+        boolean[] visited = new boolean[validNodes.length + 1];
+        // mark the starting node as visited
+        visited[startingNode] = true;
+
+        System.out.println("Depth first search visitation order");
+        dfsHelper(startingNode, visited);
+        System.out.println();
+    }
+
+    private void dfsHelper(int currentNode, boolean[] visited) {
+        System.out.print(currentNode + " ");
+
+        // get the children of the current node
+        LinkedList<Integer> children = graphAdjacencyList.get(currentNode);
+        for (Integer child : children) {
+            // if the child has not been visited yet, mark it as visited and recursively call the helper method
+            if (!visited[child]) {
+                visited[child] = true;
+                dfsHelper(child, visited);
+            }
+        }
+    }
 	
 	@Override
 	public String toString() {
